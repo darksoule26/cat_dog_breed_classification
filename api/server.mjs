@@ -1,26 +1,23 @@
-import { Client } from '@gradio/client';
+import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
-import path from 'path';
+import { Client } from '@gradio/client';
 
-// Set up multer to handle file uploads and store them in the /tmp directory (Vercel's writable directory)
-const upload = multer({
-    dest: '/tmp/',  // Use the temporary storage provided by Vercel
-});
+const app = express();
+const upload = multer({ storage: multer.memoryStorage() }); // Use memory storage
+const PORT = 3000;
 
-// Define the Vercel API handler for the POST request
-export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        console.log('Received prediction request');
-        
-        // Handle no file uploaded
+app.use(express.static('public'));
+
+app.post('/predict', upload.single('image'), async (req, res) => {
+    console.log('Received prediction request');
+    try {
         if (!req.file) {
             console.log('No file uploaded');
             return res.status(400).json({ error: 'No file uploaded.' });
         }
 
-        // Log the uploaded file path
-        console.log('File uploaded:', req.file.path);
+        console.log('File uploaded:', req.file);
 
         let client;
         try {
@@ -32,9 +29,9 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Unable to connect to the classification model.' });
         }
 
-        // Read the uploaded file from the /tmp directory
-        const imageBuffer = fs.readFileSync(req.file.path);
-        console.log('Image read from file');
+        // Convert buffer to Blob (as Gradio expects a Blob object)
+        const imageBuffer = req.file.buffer;
+        console.log('Image received as buffer');
 
         let result;
         try {
@@ -48,20 +45,29 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Error during image classification.' });
         }
 
-        // Clean up the uploaded file from /tmp
-        fs.unlinkSync(req.file.path);
-        console.log('Temporary file deleted');
-
-        // Check if the response is in the expected format
         if (result && result.data && Array.isArray(result.data)) {
             console.log('Sending successful response');
-            res.json({ breed: result.data[0] });
+            res.json({ breed: result.data[0] }); // Send breed directly
         } else {
             console.log('Unexpected response format:', result);
             res.status(500).json({ error: 'Unexpected response from the classification model.' });
         }
-    } else {
-        // Handle other HTTP methods
-        res.status(405).json({ error: 'Method not allowed' });
+    } catch (error) {
+        console.error('Unhandled error:', error);
+        res.status(500).json({ error: 'An error occurred while processing the image.', details: error.message });
     }
-}
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+
+// Test the Gradio client connection
+(async () => {
+    try {
+        const client = await Client.connect("darksoule26/cat_and_dog_classification");
+        console.log('Successfully connected to Gradio client');
+    } catch (error) {
+        console.error('Error testing Gradio client connection:', error);
+    }
+})();
