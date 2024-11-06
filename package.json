@@ -1,5 +1,5 @@
 {
-    "name": "pet",
+    "name": "pet-breed-classifier",
     "version": "1.0.0",
     "type": "module",
     "main": "server.mjs",
@@ -9,7 +9,7 @@
     "author": "",
     "license": "ISC",
     "keywords": [],
-    "description": "",
+    "description": "A pet breed classifier using Express and Gradio",
     "dependencies": {
         "@gradio/client": "^1.7.1",
         "express": "^4.21.1",
