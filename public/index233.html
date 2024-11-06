@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetBreed AI - Identify Your Pet's Breed</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">PetBreed AI</div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Identify Your Pet's Breed</h1>
+        <p>Upload a photo of your dog or cat, and our AI will identify its breed!</p>
+        
+        <div class="upload-container">
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="file-input-wrapper">
+                    <input type="file" id="file-input" name="image" accept="image/*" required>
+                    <label for="file-input">Choose a file or drag it here</label>
+                </div>
+                <button type="submit" id="submit-btn">Identify Breed</button>
+            </form>
+        </div>
+
+        <div id="result" class="hidden">
+            <h2>Result:</h2>
+            <p id="breed-result"></p>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing your pet...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 PetBreed AI. Made with ❤️ for pet lovers.</p>
+    </footer>
+
+    <script src="script.mjs"></script>
+</body>
+</html>

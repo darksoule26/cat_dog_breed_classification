@@ -1,0 +1,19 @@
+{
+    "name": "pet",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "server.mjs",
+    "scripts": {
+        "start": "node server.mjs"
+    },
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "description": "",
+    "dependencies": {
+        "@gradio/client": "^1.7.1",
+        "express": "^4.21.1",
+        "multer": "^1.4.5-lts.1",
+        "node-fetch": "^2.7.0"
+    }
+}
