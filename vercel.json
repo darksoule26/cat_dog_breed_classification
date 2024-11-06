@@ -1,15 +1,22 @@
 {
-    "builds": [
-      {
-        "src": "api/server.mjs",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/predict",
-        "dest": "/api/server.mjs"
-      }
-    ]
-  }
-  
+  "builds": [
+    {
+      "src": "api/server.mjs",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/predict",
+      "dest": "/api/server.mjs"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
+}
