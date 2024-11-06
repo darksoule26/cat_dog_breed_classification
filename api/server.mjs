@@ -1,9 +1,12 @@
 import { Client } from '@gradio/client';
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
-// Set up multer to handle file uploads
-const upload = multer({ dest: 'uploads/' });
+// Set up multer to handle file uploads and store them in the /tmp directory (Vercel's writable directory)
+const upload = multer({
+    dest: '/tmp/',  // Use the temporary storage provided by Vercel
+});
 
 // Define the Vercel API handler for the POST request
 export default async function handler(req, res) {
@@ -29,7 +32,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Unable to connect to the classification model.' });
         }
 
-        // Read the uploaded file
+        // Read the uploaded file from the /tmp directory
         const imageBuffer = fs.readFileSync(req.file.path);
         console.log('Image read from file');
 
@@ -45,7 +48,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Error during image classification.' });
         }
 
-        // Clean up the uploaded file
+        // Clean up the uploaded file from /tmp
         fs.unlinkSync(req.file.path);
         console.log('Temporary file deleted');
 
